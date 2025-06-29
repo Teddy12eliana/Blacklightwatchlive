@@ -1,0 +1,1 @@
+fetch("https://teddy12eliana-2.onrender.com/status-api")
