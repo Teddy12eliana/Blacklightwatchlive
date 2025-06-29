@@ -1,0 +1,21 @@
+<body>  
+  <h1>⚠️ Global Alerts</h1>
+  <div id="alertBox">Loading alerts...</div>
+
+  <script>
+    async function fetchAlerts() {
+      try {
+        const response = await fetch("https://teddy12eliana-2.onrender.com/api/alerts");
+        const data = await response.json();
+        document.getElementById("alertBox").innerText = JSON.stringify(data, null, 2);
+      } catch (error) {
+        document.getElementById("alertBox").innerText = "❌ Failed to fetch alerts.";
+        console.error(error);
+      }
+    }
+
+    fetchAlerts();
+  </script>
+</body>
+</html>
+
