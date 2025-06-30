@@ -29,7 +29,7 @@
   <script>
     async function fetchAlerts() {
       try {
-        const response = await fetch("https://teddy12eliana-2.onrender.com/status-api");
+        const response = await fetch("https://https://live-w8od.onrender.com/status-api");
         const data = await response.json();
         document.getElementById("alertBox").innerText = JSON.stringify(data, null, 2);
       } catch (error) {
