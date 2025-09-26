@@ -1,0 +1,168 @@
+#!/bin/bash
+
+# -----------------------------
+# Abyssinian Garden Fast Load + Cinematic Deploy
+# -----------------------------
+# Requirements: gh CLI, vercel CLI, npm, cwebp, gltf-pipeline, sharp
+# Install:
+# npm i -g vercel gltf-pipeline
+# npm install sharp
+# Linux: sudo apt install webp
+# macOS: brew install webp
+
+echo "🚀 Starting Abyssinian Garden optimized deploy..."
+
+# -----------------------------
+# Step 0: Check required tools
+# -----------------------------
+for cmd in git gh vercel npx cwebp gltf-pipeline node; do
+    command -v $cmd >/dev/null 2>&1 || { echo >&2 "Error: $cmd is not installed. Install it first."; exit 1; }
+done
+
+# -----------------------------
+# Step 1: Optimize & resize images
+# -----------------------------
+echo "🖼️ Resizing and converting images to WebP..."
+node -e "
+const sharp = require('sharp');
+const fs = require('fs');
+const path = require('path');
+const walkSync = (dir, filelist = []) => {
+  fs.readdirSync(dir).forEach(f => {
+    const fp = path.join(dir, f);
+    if (fs.statSync(fp).isDirectory()) walkSync(fp, filelist);
+    else filelist.push(fp);
+  });
+  return filelist;
+};
+walkSync('./src').forEach(f => {
+  if(f.match(/\.(jpg|png)$/i)) {
+    sharp(f).resize({width: 1024}).toFile(f.replace(/\.(jpg|png)$/i, '.webp'));
+  }
+});
+"
+
+# -----------------------------
+# Step 2: Compress GLTF/GLB with Draco
+# -----------------------------
+echo "🗿 Compressing 3D models with Draco..."
+find ./src -type f \( -iname "*.gltf" -o -iname "*.glb" \) | while read model; do
+    gltf-pipeline -i "$model" -o "${model}.draco.glb" -b --draco.compressionLevel=10
+done
+
+# -----------------------------
+# Step 3: FogParticles (adaptive count)
+# -----------------------------
+FOG_FILE="./src/FogParticles.js"
+if [ ! -f "$FOG_FILE" ]; then
+cat <<EOT > "$FOG_FILE"
+import { useRef, useMemo, useState, useEffect } from "react";
+import { useFrame } from "@react-three/fiber";
+
+export default function FogParticles() {
+  const ref = useRef();
+  const [count, setCount] = useState(500);
+
+  useEffect(() => {
+    setCount(window.innerWidth < 800 ? 200 : 800); // fewer particles on small devices
+  }, []);
+
+  const positions = useMemo(() => {
+    const arr = new Float32Array(count * 3);
+    for (let i = 0; i < count * 3; i++) arr[i] = (Math.random()-0.5)*50;
+    return arr;
+  }, [count]);
+
+  useFrame((state, delta) => {
+    ref.current.rotation.y += delta*0.02;
+    ref.current.position.y += Math.sin(state.clock.elapsedTime*0.1)*0.01;
+  });
+
+  return (
+    <points ref={ref}>
+      <bufferGeometry>
+        <bufferAttribute attach='attributes-position' count={positions.length/3} array={positions} itemSize={3} />
+      </bufferGeometry>
+      <pointsMaterial size={0.15} color="#8ED1FC" transparent opacity={0.2}/>
+    </points>
+  );
+}
+EOT
+fi
+
+# -----------------------------
+# Step 4: AmbientAudio
+# -----------------------------
+AUDIO_FILE="./src/AmbientAudio.js"
+if [ ! -f "$AUDIO_FILE" ]; then
+cat <<EOT > "$AUDIO_FILE"
+import { useEffect } from "react";
+export default function AmbientAudio() {
+  useEffect(() => {
+    const windAudio = new Audio("https://cdn.pixabay.com/download/audio/2022/03/16/audio_6f7686fbc3.mp3?filename=wind-chimes-ambient-14595.mp3");
+    windAudio.loop = true; windAudio.volume = 0.1;
+    const bassAudio = new Audio("https://cdn.pixabay.com/download/audio/2022/03/04/audio_c3b2fa5c10.mp3?filename=lofi-soul-bass-ambient-14521.mp3");
+    bassAudio.loop = true; bassAudio.volume = 0.05;
+    windAudio.play(); bassAudio.play();
+    return () => { windAudio.pause(); bassAudio.pause(); };
+  }, []);
+  return null;
+}
+EOT
+fi
+
+# -----------------------------
+# Step 5: InteractivePlant
+# -----------------------------
+PLANT_FILE="./src/InteractivePlant.js"
+if [ ! -f "$PLANT_FILE" ]; then
+cat <<EOT > "$PLANT_FILE"
+import { useRef, useState } from "react";
+import { useFrame } from "@react-three/fiber";
+export default function InteractivePlant({ position, model }) {
+  const ref = useRef();
+  const [hovered, setHovered] = useState(false);
+  useFrame((state) => {
+    if(ref.current){
+      ref.current.rotation.z = Math.sin(state.clock.elapsedTime*0.5+ref.current.position.x)*0.03;
+      ref.current.rotation.x = Math.sin(state.clock.elapsedTime*0.3+ref.current.position.z)*0.02;
+    }
+  });
+  return (
+    <mesh ref={ref} position={position} onPointerOver={()=>setHovered(true)} onPointerOut={()=>setHovered(false)} castShadow receiveShadow>
+      <primitive object={model}/>
+      {hovered && <mesh><sphereGeometry args={[1.2,32,32]}/><meshStandardMaterial emissive="#8ED1FC" emissiveIntensity={0.5} transparent opacity={0.3}/></mesh>}
+    </mesh>
+  );
+}
+EOT
+fi
+
+# -----------------------------
+# Step 6: GitHub push
+# -----------------------------
+if [ ! -d ".git" ]; then git init; fi
+git add .
+git commit -m "Deploy Abyssinian Garden optimized fast cinematic interactive" 2>/dev/null
+
+read -p "Enter your GitHub username: " GH_USER
+REPO_NAME="abyssinian-garden"
+
+gh repo view $GH_USER/$REPO_NAME >/dev/null 2>&1
+if [ $? -ne 0 ]; then
+    echo "🌐 Creating GitHub repo..."
+    gh repo create $GH_USER/$REPO_NAME --public --source=. --remote=origin --push
+else
+    git remote add origin https://github.com/$GH_USER/$REPO_NAME.git 2>/dev/null
+    git push -u origin main
+fi
+
+# -----------------------------
+# Step 7: Deploy to Vercel
+# -----------------------------
+SUBDOMAIN="abyssinian-garden-$(date +%s)"
+echo "✨ Deploying to Vercel at subdomain: $SUBDOMAIN.vercel.app"
+vercel --prod --name $SUBDOMAIN --confirm
+
+echo "✅ Deployment complete!"
+echo "🌐 Live Abyssinian Garden cinematic + real-feeling + fast load: https://$SUBDOMAIN.vercel.app"
