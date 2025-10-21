@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Blacklight Watch — Secure Access</title>
+  <link rel="stylesheet" href="assets/style.css" />
+</head>
+<body class="fade-in">
+  <main class="main centered narrow">
+    <h1>Admin Dashboard</h1>
+    <p class="muted">Signed in as admin</p>
+
+    <section class="panel">
+      <h2>Post a Report</h2>
+      <label>Category
+        <select id="category">
+          <option value="health">health</option>
+          <option value="conflict">conflict</option>
+          <option value="economy">economy</option>
+          <option value="technology">technology</option>
+          <option value="trafficking">trafficking</option>
+        </select>
+      </label>
+      <label>Country <input id="country" placeholder="USA, Ethiopia, Ukraine"></label>
+      <label>Source <input id="source" placeholder="WHO / UN / ACLED / Reuters"></label>
+      <label>Summary <textarea id="summary" rows="3" placeholder="Short description…"></textarea></label>
+      <button id="btnPost" class="button">Submit</button>
+      <div id="postMsg" class="muted"></div>
+    </section>
+
+    <p><a href="index.html">← Back to Dashboard</a></p>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="assets/supabase.js"></script>
+  <script src="assets/admin.js"></script>
+</body>
+</html>

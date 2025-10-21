@@ -1,0 +1,58 @@
+/* Blacklight Watch — Elite dark theme with electric-blue intro */
+:root{
+  --bg:#0b0f14; --panel:#151b23; --muted:#8aa0b3; --text:#e7eef6; --accent:#64d3ff; --accent2:#7aa7ff; --line:#223041;
+}
+*{box-sizing:border-box}
+body{margin:0; font-family:Inter,system-ui,Segoe UI,Roboto,Arial; background:linear-gradient(180deg,#0b0f14,#0a121b); color:var(--text);}
+a{color:var(--accent)}
+h1{font-size:28px;margin:0 0 6px}
+h2{font-size:18px;margin:0 0 12px}
+.sub{color:var(--muted);margin:0 0 16px}
+.muted{color:var(--muted)}
+.pill{padding:4px 10px;border:1px solid var(--line);border-radius:999px;background:#0f1620;color:#9ed9ff;font-size:12px}
+
+.sidebar{
+  position:fixed;left:0;top:0;bottom:0;width:240px;background:rgba(15,22,32,.7);
+  backdrop-filter: blur(8px); border-right:1px solid var(--line); padding:16px; display:flex;flex-direction:column;
+}
+.brand{display:flex;gap:10px;align-items:center;margin-bottom:16px}
+.brand strong{font-weight:800}
+.brand span{color:var(--muted)}
+.sidebar nav a{display:block;padding:10px 12px;margin:6px 0;border-radius:10px;color:#cfe7ff;cursor:pointer;border:1px solid transparent}
+.sidebar nav a.active{background:#0f1620;border-color:var(--line)}
+.sidebar .button{width:100%;margin-top:8px}
+.spacer{flex:1}
+
+.main{margin-left:240px;padding:24px}
+.page-header{margin-bottom:18px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.panel{background:rgba(21,27,35,.8);border:1px solid var(--line);border-radius:14px;padding:16px}
+.map{height:420px;border-radius:12px;overflow:hidden;border:1px solid var(--line)}
+
+.button{background:linear-gradient(90deg,var(--accent),var(--accent2));color:#04121c;border:none;padding:10px 14px;border-radius:12px;cursor:pointer;font-weight:700}
+.button.ghost{background:transparent;color:#b7c5d8;border:1px solid var(--line)}
+
+.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:16px}
+.card.price{background:rgba(21,27,35,.8);border:1px solid var(--line);border-radius:14px;padding:16px}
+.card.price.featured{outline:2px solid var(--accent)}
+.price-tag{font-size:28px;font-weight:800;margin:12px 0}
+.price-tag span{font-size:14px;color:var(--muted)}
+
+.centered{max-width:960px;margin:40px auto}
+.narrow{max-width:640px}
+label{display:block;margin:8px 0 10px}
+input,select,textarea{width:100%;padding:10px;border-radius:10px;border:1px solid var(--line);background:#0f1620;color:#var(--text)}
+.row{display:flex;gap:8px;align-items:center}
+dialog::backdrop{background:rgba(0,0,0,.55)}
+.modal{background:#0f1620;border:1px solid var(--line);border-radius:14px;padding:16px;min-width:320px}
+
+/* Cinematic intro (electric blue) */
+.intro-on .intro{position:fixed;inset:0;display:grid;place-items:center;background:radial-gradient(circle at 50% 40%, rgba(100,211,255,0.15), transparent 40%), #05090f;z-index:50;animation: fadeOut 1.2s ease forwards 0.7s;}
+.intro-title{font-size:36px;letter-spacing:2px;color:#bfeaff;text-shadow:0 0 16px rgba(100,211,255,.8), 0 0 42px rgba(122,167,255,.5);animation:pulse 1.2s ease;}
+.intro-title span{color:#e7eef6;opacity:.85}
+@keyframes pulse{0%{transform:scale(.98);opacity:.4} 50%{transform:scale(1);opacity:1} 100%{transform:scale(1.01);opacity:.92}}
+@keyframes fadeOut{to{opacity:0;visibility:hidden}}
+
+/* Subtle content fade-in */
+.fade-in{animation: contentIn .5s ease both .9s;}
+@keyframes contentIn{from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:none}}

@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Blacklight Watch — Pricing</title>
+  <link rel="stylesheet" href="assets/style.css" />
+  <script src="https://js.stripe.com/v3/"></script>
+</head>
+<body class="fade-in">
+  <main class="main centered">
+    <h1>Choose your access</h1>
+    <p class="sub">Cancel anytime. Your data stays private.</p>
+
+    <div class="cards">
+      <div class="card price">
+        <h3>Individual</h3>
+        <div class="price-tag">$5<span>/mo</span></div>
+        <ul>
+          <li>Live reports feed</li>
+          <li>Country drilldowns</li>
+          <li>Email alerts</li>
+        </ul>
+        <button class="button" onclick="checkout('basic')">Start</button>
+      </div>
+      <div class="card price featured">
+        <h3>Pro</h3>
+        <div class="price-tag">$15<span>/mo</span></div>
+        <ul>
+          <li>Everything in Individual</li>
+          <li>Historical charts</li>
+          <li>Compare countries</li>
+          <li>Map layers (refugee, clinics, fuel)</li>
+        </ul>
+        <button class="button" onclick="checkout('pro')">Go Pro</button>
+      </div>
+      <div class="card price">
+        <h3>Organization</h3>
+        <div class="price-tag">2–5%<span> fee</span></div>
+        <ul>
+          <li>Fundraising access (verified)</li>
+          <li>Campaign analytics</li>
+          <li>Payouts via Stripe</li>
+        </ul>
+        <button class="button ghost" onclick="checkout('org')">Apply</button>
+      </div>
+    </div>
+
+    <p><a href="index.html">← Back to Dashboard</a></p>
+  </main>
+
+  <script src="assets/stripe.js"></script>
+</body>
+</html>

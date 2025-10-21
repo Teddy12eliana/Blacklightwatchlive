@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Blacklight Watch — Global Live Intelligence</title>
+  <meta name="description" content="Health • Conflict • Economy • Tech • Trafficking — live, verified signals."/>
+  <link rel="stylesheet" href="assets/style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+</head>
+<body class="intro-on">
+  <div class="intro" id="intro">
+    <h1 class="intro-title">BLACKLIGHT <span>WATCH</span></h1>
+  </div>
+
+  <aside class="sidebar">
+    <div class="brand">
+      <div><strong>Blacklight</strong><span> Watch</span></div>
+    </div>
+    <nav>
+      <a class="active" data-tab="feed">Feed</a>
+      <a data-tab="map">Map</a>
+      <a data-tab="insights">Insights</a>
+      <a data-tab="about">About</a>
+    </nav>
+    <div class="spacer"></div>
+    <div class="sidebar-actions">
+      <a class="button ghost" href="pricing.html">Pro / Pricing</a>
+      <a class="button ghost" href="login.html">Secure Access</a>
+      <button id="openSettings" class="button">Settings</button>
+    </div>
+  </aside>
+
+  <main class="main fade-in">
+    <header class="page-header">
+      <h1>Global Live Intelligence</h1>
+      <p class="sub">Health • Conflict • Economy • Tech • Trafficking</p>
+      <span id="supabaseBadge" class="pill">Connecting…</span>
+    </header>
+
+    <section id="tab-feed" class="tab active">
+      <div class="grid2">
+        <div class="panel">
+          <h2>Latest Reports</h2>
+          <div id="reports"></div>
+        </div>
+        <div class="panel">
+          <h2>Module Freshness</h2>
+          <div id="freshness">No status yet.</div>
+        </div>
+      </div>
+    </section>
+
+    <section id="tab-map" class="tab">
+      <div class="panel">
+        <h2>Live Map</h2>
+        <div id="map" class="map"></div>
+      </div>
+    </section>
+
+    <section id="tab-insights" class="tab">
+      <div class="panel">
+        <h2>Risk & Trend Radar (Preview)</h2>
+        <p>Coming next: adjustable radius, update cadence, and 3–12 month outlook.</p>
+      </div>
+    </section>
+
+    <section id="tab-about" class="tab">
+      <div class="panel">
+        <h2>About</h2>
+        <p>Neutral, verified signals. Voices allowed, propaganda filtered. Built for citizens, analysts, and responders.</p>
+      </div>
+    </section>
+  </main>
+
+  <!-- Settings Modal -->
+  <dialog id="settingsModal">
+    <form method="dialog" class="modal">
+      <h3>Connection Settings</h3>
+      <label>Supabase URL
+        <input id="cfgUrl" placeholder="https://wpejsfqjwfftqmxee.supabase.co" />
+      </label>
+      <label>Supabase Anon Key
+        <input id="cfgKey" placeholder="(auto)" />
+      </label>
+      <div class="row">
+        <button id="saveCfg" class="button">Save</button>
+        <button class="button ghost">Close</button>
+      </div>
+      <small class="muted">Saved only in this browser (localStorage).</small>
+    </form>
+  </dialog>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="assets/supabase.js"></script>
+  <script src="assets/public.js"></script>
+  <script>
+    document.querySelectorAll('aside nav a').forEach(function(a){
+      a.addEventListener('click', function(){
+        document.querySelectorAll('aside nav a').forEach(function(x){ x.classList.remove('active'); });
+        a.classList.add('active');
+        var tabId = a.dataset.tab;
+        document.querySelectorAll('.tab').forEach(function(t){ t.classList.remove('active'); });
+        document.getElementById('tab-' + tabId).classList.add('active');
+        if(tabId==='map' && window.initMapOnce){ window.initMapOnce(); }
+      });
+    });
+    setTimeout(function(){
+      document.body.classList.remove('intro-on');
+      var intro = document.getElementById('intro');
+      if(intro) intro.remove();
+    }, 1200);
+  </script>
+</body>
+</html>
