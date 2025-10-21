@@ -97,10 +97,10 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <!-- Then load your project scripts -->
-<script src="assets/supabase.js"></script>
-<script src="assets/public.js"></script>
      document.querySelectorAll('aside nav a').forEach(function(a){
-      a.addEventListener('click', function(){
+      a.addEventListener('click', functio<script type="module" src="assets/supabase.js"></script>
+<script type="module" src="assets/public.js"></script>
+n(){
         document.querySelectorAll('aside nav a').forEach(function(x){ x.classList.remove('active'); });
         a.classList.add('active');
         var tabId = a.dataset.tab;
