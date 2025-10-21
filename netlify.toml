@@ -14,11 +14,15 @@
     Access-Control-Allow-Methods = "GET, POST, OPTIONS"
     Access-Control-Allow-Headers = "Content-Type, Authorization"
 
+# ✅ Define all scheduled functions here properly
 [[functions]]
   name = "create-checkout-session"
+  schedule = "*/15 * * * *"
 
 [[functions]]
   name = "stripe-webhook"
+  schedule = "*/10 * * * *"
 
 [[functions]]
   name = "create-checkout-donation"
+  schedule = "*/20 * * * *"
