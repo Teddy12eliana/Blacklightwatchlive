@@ -1,0 +1,12 @@
+{
+  "name": "blacklightwatchlive",
+  "version": "1.0.0",
+  "description": "Blacklight Watch Live site with Netlify Functions",
+  "main": "index.html",
+  "scripts": {
+    "build": "echo Build complete"
+  },
+  "dependencies": {
+    "stripe": "^14.0.0"
+  }
+}
