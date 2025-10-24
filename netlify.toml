@@ -1,6 +1,11 @@
+[build.environment]
+  NODE_VERSION = "18"
+  VITE_SUPABASE_URL = "https://wpejsfqjwfftqmxee.supabase.co"
+  VITE_SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndwZWpzZnFqd2ZmdHFteGVlZ2JmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjExNzM0NTQsImV4cCI6MjA3Njc0OTQ1NH0.i-Zrfr9povPEhMOwGOp-DMZdOVdi-l4tFX7V24M1gs0';
+
 [build]
-  publish = "."
   command = "echo 'No build step'"
+  publish = "."
   functions = "netlify/functions"
 
 [[redirects]]
