@@ -1,9 +1,6 @@
-[build.environment]
-  NODE_VERSION = "18"
-
 [build]
-  command = ""
-  publish = "public"
+  publish = "."
+  command = "echo 'No build step'"
   functions = "netlify/functions"
 
 [[redirects]]
