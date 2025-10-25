@@ -1,12 +1,30 @@
+// assets/supabase.js
 import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
 
-// Environment variables
-const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL || 'https://wpejsfqjwfftqmxee.supabase.co';
-const SUPABASE_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndwZWpzZnFqd2ZmdHFteGVlZ2JmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjExNzM0NTQsImV4cCI6MjA3Njc0OTQ1NH0.i-Zrfr9povPEhMOwGOp-DMZdOVdi-l4tFX7V24M1gs0';
+// Helper: read from Vite env (when present) or from window-injected vars
+const readEnv = (name) =>
+  (typeof import.meta !== 'undefined' &&
+   import.meta.env &&
+   Object.prototype.hasOwnProperty.call(import.meta.env, name) &&
+   import.meta.env[name]) ||
+  (typeof window !== 'undefined' && window[name]) ||
+  '';
 
-// Create Supabase client
+// ⬅️ Use your NEW project URL below as the only fallback (no secrets in code)
+const SUPABASE_URL =
+  readEnv('VITE_SUPABASE_URL') ||
+  'https://cfdgliylbyozaajfpyhe.supabase.co'; // <-- new URL
+
+// ⛔ No hardcoded key fallback. Must come from env.
+const SUPABASE_KEY = readEnv('VITE_SUPABASE_ANON_KEY');
+
+if (!SUPABASE_URL || !SUPABASE_KEY) {
+  console.error('❌ Missing Supabase env. Set VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY in Netlify.');
+}
+
+// Create client
 export const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 
-// Debug
+// Optional: debug
 window.supabase = supabase;
 console.log('✅ Supabase initialized:', SUPABASE_URL);
