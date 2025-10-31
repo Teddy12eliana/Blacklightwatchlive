@@ -15,24 +15,6 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet" />
-
-  <!-- ✅ Safe Supabase injection block -->
-  <script>
-    // Try to use Netlify’s injected environment variables
-    window.VITE_SUPABASE_URL = window.VITE_SUPABASE_URL || "{{VITE_SUPABASE_URL}}";
-    window.VITE_SUPABASE_ANON_KEY = window.VITE_SUPABASE_ANON_KEY || "{{VITE_SUPABASE_ANON_KEY}}";
-
-    // ✅ Fallback if Netlify didn’t inject anything (prevents old URL/key)
-    if (!window.VITE_SUPABASE_URL || window.VITE_SUPABASE_URL.includes("{{VITE_SUPABASE_URL}}")) {
-      window.VITE_SUPABASE_URL = "https://cfdgliylbyozaajfpyhe.supabase.co"; // ✅ your real Supabase URL
-    }
-
-    if (!window.VITE_SUPABASE_ANON_KEY || window.VITE_SUPABASE_ANON_KEY.includes("{{VITE_SUPABASE_ANON_KEY}}")) {
-      window.VITE_SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNmZGdsaXlsYnlvemFhamZweWhlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjEzMzczNjMsImV4cCI6MjA3NjkxMzM2M30.tHJLV1TJkdhp-63Fe9RBIuyB1G5JGHZ3TmrxBRzdmjA"; // ✅ replace with your anon key
-    }
-
-    console.log("✅ Injected Supabase URL:", window.VITE_SUPABASE_URL);
-  </script>
 </head>
 
 <body class="intro-on">
@@ -57,13 +39,14 @@
     </div>
   </aside>
 
-    <main class="main fade-in">
+  <main class="main fade-in">
     <header class="page-header">
       <h1>Global Live Intelligence</h1>
       <p class="sub">Health • Conflict • Economy • Tech • Trafficking</p>
       <span id="supabaseBadge" class="pill">Connecting…</span>
     </header>
 
+    <!-- 🟢 Dynamic Reports Section -->
     <section>
       <h2>Latest Reports</h2>
       <div class="reports-container">
@@ -94,7 +77,7 @@
     </section>
   </main>
 
-  <!-- 🟢 1️⃣ Fetch environment vars from Netlify function (runtime safe) -->
+  <!-- 🟢 Load environment vars dynamically from Netlify -->
   <script>
     window.__envPromise = (async () => {
       try {
@@ -102,25 +85,21 @@
         const env = await res.json();
 
         // ✅ Inject live envs
-        window.VITE_SUPABASE_URL = env.VITE_SUPABASE_URL || "https://cfdgliylbyozaajfpyhe.supabase.co";
-        window.VITE_SUPABASE_ANON_KEY = env.VITE_SUPABASE_ANON_KEY || "YOUR_SUPABASE_ANON_KEY_HERE";
+        window.VITE_SUPABASE_URL = env.VITE_SUPABASE_URL;
+        window.VITE_SUPABASE_ANON_KEY = env.VITE_SUPABASE_ANON_KEY;
 
-        console.log("✅ Loaded live environment from Netlify:", window.VITE_SUPABASE_URL);
+        console.log("✅ Loaded live environment:", window.VITE_SUPABASE_URL);
         return env;
       } catch (err) {
-        console.warn("⚠️ Could not fetch env from Netlify, using fallback:", err);
-        window.VITE_SUPABASE_URL = "https://cfdgliylbyozaajfpyhe.supabase.co";
-        window.VITE_SUPABASE_ANON_KEY = "YOUR_SUPABASE_ANON_KEY_HERE";
+        console.error("⚠️ Could not load env from Netlify:", err);
         return {};
       }
     })();
   </script>
 
-  <!-- 🟢 2️⃣ Load reports after environment is available -->
+  <!-- 🟢 Wait for env vars, then load Supabase -->
   <script type="module">
-    // Wait for env promise to finish
     await window.__envPromise;
-
     import { fetchReports } from './assets/supabase.js';
 
     async function loadReports() {
