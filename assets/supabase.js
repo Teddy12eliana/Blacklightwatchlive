@@ -1,14 +1,6 @@
 // assets/supabase.js
 import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
 
-// ✅ TEMPORARY TEST — add this block right under the import
-const testUrl = 'https://cfdgliylbyozaajfpyhe.supabase.co';
-const testKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNmZGdsaXlsYnlvemFhamZweWhlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjEzMzczNjMsImV4cCI6MjA3NjkxMzM2M30.tHJLV1TJkdhp-63Fe9RBIuyB1G5JGHZ3TmrxBRzdmjA'; // ⬅️ paste your actual anon key (from Supabase API settings)
-
-console.log('🧪 Testing direct connection...');
-const supabaseTest = createClient(testUrl, testKey);
-supabaseTest.from('reports').select('*').then(console.log);
-
 // ✅ Helper to read environment variables (from Netlify or injected in HTML)
 const readEnv = (name) =>
   (typeof import.meta !== 'undefined' &&
@@ -29,7 +21,7 @@ if (!SUPABASE_URL || !SUPABASE_KEY) {
   console.log('✅ Supabase initialized:', SUPABASE_URL);
 }
 
-// ✅ Create Supabase client (the real one)
+// ✅ Create Supabase client
 export const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 
 // ✅ Fetch reports (used by index.html)
