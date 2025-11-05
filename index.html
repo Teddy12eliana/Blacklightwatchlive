@@ -1,16 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <!-- ✅ Character encoding & viewport -->
   <meta charset="utf-8" />
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-
-  <!-- ✅ SEO & title -->
   <title>Blacklight Watch — Global Live Intelligence</title>
   <meta name="description" content="Health • Conflict • Economy • Tech • Trafficking — Live verified global intelligence updates." />
-
-  <!-- ✅ Styles -->
   <link rel="stylesheet" href="assets/style.css" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -18,14 +13,14 @@
 </head>
 
 <body class="intro-on">
+  <!-- Intro splash -->
   <div class="intro" id="intro">
     <h1 class="intro-title">BLACKLIGHT <span>WATCH</span></h1>
   </div>
 
+  <!-- Sidebar -->
   <aside class="sidebar">
-    <div class="brand">
-      <strong>Blacklight</strong> <span>Watch</span>
-    </div>
+    <div class="brand"><strong>Blacklight</strong> <span>Watch</span></div>
     <nav>
       <a class="active" data-tab="feed">Feed</a>
       <a data-tab="map">Map</a>
@@ -39,55 +34,92 @@
     </div>
   </aside>
 
+  <!-- Main -->
   <main class="main fade-in">
-    <header class="page-header">
-      <h1>Global Live Intelligence</h1>
-      <p class="sub">Health • Conflict • Economy • Tech • Trafficking</p>
-      <span id="supabaseBadge" class="pill">Connecting…</span>
-    </header>
+    <!-- CINEMATIC HERO -->
+    <section class="hero">
+      <div class="hero-bg"></div>
+      <div class="hero-glow"></div>
+      <div class="hero-content">
+        <h1>Global Live Intelligence</h1>
+        <p class="sub">Health • Conflict • Economy • Tech • Trafficking</p>
+        <span id="supabaseBadge" class="pill">Connecting…</span>
 
-    <!-- 🟢 Dynamic Reports Section -->
-    <section>
+        <div class="chip-row" aria-hidden="true">
+          <span class="chip">WHO</span>
+          <span class="chip">IMF</span>
+          <span class="chip">UN</span>
+          <span class="chip">ACLED</span>
+          <span class="chip">Sat Feeds</span>
+          <span class="chip">Local Voices</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- AI PREDICTIONS -->
+    <section class="panel">
+      <h2>AI Predictions (Live)</h2>
+      <p class="muted">Auto-updated every few hours. Pro & Analyst tiers unlock history and alerting.</p>
+      <div class="pred-grid" id="predictions">
+        <!-- Filled by assets/predictions.js -->
+        <div class="pred-card">
+          <h4>Conflict Risk</h4>
+          <div class="meter" data-key="conflict_risk"><span></span></div>
+          <p class="pred-note" data-key="conflict_note">Loading…</p>
+        </div>
+        <div class="pred-card">
+          <h4>Health Outbreak Risk</h4>
+          <div class="meter" data-key="health_risk"><span></span></div>
+          <p class="pred-note" data-key="health_note">Loading…</p>
+        </div>
+        <div class="pred-card">
+          <h4>Economic Sentiment</h4>
+          <div class="meter" data-key="economy_sentiment"><span></span></div>
+          <p class="pred-note" data-key="economy_note">Loading…</p>
+        </div>
+        <div class="pred-card">
+          <h4>Investor Signals</h4>
+          <div class="meter" data-key="investor_signal"><span></span></div>
+          <p class="pred-note" data-key="investor_note">Loading…</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- FEED -->
+    <section class="panel">
       <h2>Latest Reports</h2>
-      <div class="reports-container">
-        <p>Loading reports...</p>
-      </div>
+      <div class="reports-container"><p>Loading reports...</p></div>
     </section>
 
-    <section>
+    <section class="panel">
       <h2>Module Freshness</h2>
-      <p>No status yet.</p>
+      <p class="muted">No status yet.</p>
     </section>
 
-    <section>
+    <section class="panel">
       <h2>Live Map</h2>
-      <div style="height:420px;border:1px solid #222;border-radius:12px;background:#0f0f0f;">
-        <!-- Map placeholder -->
-      </div>
+      <div style="height:420px;border:1px solid #222;border-radius:12px;background:#0f0f0f;"></div>
     </section>
 
-    <section>
+    <section class="panel">
       <h2>Risk & Trend Radar (Preview)</h2>
       <p>Coming next: adjustable radius, update cadence, and 3–12 month outlook.</p>
     </section>
 
-    <section>
+    <section class="panel">
       <h2>About</h2>
       <p>Neutral, verified signals. Voices allowed, propaganda filtered. Built for citizens, analysts, and responders.</p>
     </section>
   </main>
 
-  <!-- 🟢 Load environment vars dynamically from Netlify -->
+  <!-- Pull live env from Netlify -->
   <script>
     window.__envPromise = (async () => {
       try {
-        const res = await fetch('/.netlify/functions/env', { cache: 'no-store' });
+        const res = await fetch('https://blacklightwatchlive1k.netlify.app/.netlify/functions/env', { cache: 'no-store' });
         const env = await res.json();
-
-        // ✅ Inject live envs
         window.VITE_SUPABASE_URL = env.VITE_SUPABASE_URL;
         window.VITE_SUPABASE_ANON_KEY = env.VITE_SUPABASE_ANON_KEY;
-
         console.log("✅ Loaded live environment:", window.VITE_SUPABASE_URL);
         return env;
       } catch (err) {
@@ -95,37 +127,40 @@
         return {};
       }
     })();
+
+    // little intro fade
+    window.addEventListener('load', () => {
+      setTimeout(() => {
+        document.body.classList.remove('intro-on');
+        const intro = document.getElementById('intro');
+        if (intro) intro.remove();
+      }, 900);
+    });
   </script>
 
-  <!-- 🟢 Wait for env vars, then load Supabase -->
+  <!-- Load modules after env -->
   <script type="module">
     await window.__envPromise;
     import { fetchReports } from './assets/supabase.js';
+    import { loadPredictions } from './assets/predictions.js';
 
-    async function loadReports() {
+    // Reports
+    (async function loadReports() {
       const reports = await fetchReports();
       const container = document.querySelector('.reports-container');
       if (!container) return;
+      if (!reports.length) { container.innerHTML = '<p>No recent reports found.</p>'; return; }
+      container.innerHTML = reports.map(r => `
+        <div class="report-item">
+          <h4>${r.title || 'Untitled Report'}</h4>
+          <p>${r.summary || 'No summary available.'}</p>
+          <span>${new Date(r.created_at).toLocaleString()}</span>
+        </div>
+      `).join('');
+    })();
 
-      if (!reports.length) {
-        container.innerHTML = '<p>No recent reports found.</p>';
-        return;
-      }
-
-      container.innerHTML = reports
-        .map(
-          (r) => `
-          <div class="report-item">
-            <h4>${r.title || 'Untitled Report'}</h4>
-            <p>${r.summary || 'No summary available.'}</p>
-            <span>${new Date(r.created_at).toLocaleString()}</span>
-          </div>
-        `
-        )
-        .join('');
-    }
-
-    loadReports();
+    // Predictions
+    loadPredictions();
   </script>
 </body>
 </html>

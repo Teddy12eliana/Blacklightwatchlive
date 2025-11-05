@@ -55,4 +55,114 @@ dialog::backdrop{background:rgba(0,0,0,.55)}
 
 /* Subtle content fade-in */
 .fade-in{animation: contentIn .5s ease both .9s;}
-@keyframes contentIn{from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:none}}
+@keyframes contentIn{from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:none}}	
+
+/* === Cinematic Hero === */
+.hero {
+  position: relative;
+  overflow: hidden;
+  margin: -16px 0 24px;
+  border-radius: 18px;
+  background: #0a0a0a;
+  padding: 72px 24px;
+  isolation: isolate;
+}
+.hero-bg {
+  position: absolute;
+  inset: -20%;
+  background:
+    radial-gradient(60% 60% at 30% 50%, rgba(0,140,255,.35), transparent 55%),
+    radial-gradient(60% 60% at 70% 50%, rgba(255,110,48,.35), transparent 55%);
+  filter: blur(40px);
+  z-index: 0;
+}
+.hero-glow {
+  position: absolute;
+  inset: auto 10% -30% 10%;
+  height: 180px;
+  background: radial-gradient(50% 100% at 50% 0%, rgba(255,255,255,.15), transparent 70%);
+  z-index: 0;
+}
+.hero .hero-content {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+}
+.hero .sub {
+  opacity: .85;
+  margin: .25rem 0 1rem;
+}
+.chip-row {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 16px;
+}
+.chip {
+  font-size: 12px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  border: 1px solid #1f2730;
+  background: #0d1117;
+}
+.pill {
+  display: inline-block;
+  font-size: 12px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: #0f1722;
+  border: 1px solid #243144;
+  margin-top: 8px;
+}
+
+/* === Panels & grid === */
+.panel {
+  background: #0c0c0c;
+  border: 1px solid #1a1a1a;
+  border-radius: 16px;
+  padding: 16px;
+  margin: 16px 0;
+}
+.pred-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+}
+@media (max-width: 980px) {
+  .pred-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+.pred-card {
+  background: #0f0f0f;
+  border: 1px solid #1b1b1b;
+  border-radius: 14px;
+  padding: 14px;
+}
+.pred-card h4 {
+  margin: 0 0 10px;
+}
+.pred-note {
+  font-size: 13px;
+  color: #9aa4ad;
+  margin-top: 8px;
+}
+
+/* Meter bar */
+.meter {
+  position: relative;
+  height: 10px;
+  border-radius: 999px;
+  background: #121212;
+  border: 1px solid #202020;
+  overflow: hidden;
+}
+.meter span {
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 0%;
+  background: linear-gradient(90deg, #2dd4bf, #22d3ee, #60a5fa);
+  transition: width .6s ease;
+  border-radius: 999px;
+}

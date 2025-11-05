@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- ✅ Character encoding & viewport -->
+  <meta charset="utf-8" />
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <!-- ✅ SEO & title -->
+  <title>Blacklight Watch — Global Live Intelligence</title>
+  <meta name="description" content="Health • Conflict • Economy • Tech • Trafficking — Live verified global intelligence updates." />
+
+  <!-- ✅ Styles -->
+  <link rel="stylesheet" href="assets/style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet" />
+</head>
+
+<body class="intro-on">
+  <div class="intro" id="intro">
+    <h1 class="intro-title">BLACKLIGHT <span>WATCH</span></h1>
+  </div>
+
+  <aside class="sidebar">
+    <div class="brand">
+      <strong>Blacklight</strong> <span>Watch</span>
+    </div>
+    <nav>
+      <a class="active" data-tab="feed">Feed</a>
+      <a data-tab="map">Map</a>
+      <a data-tab="insights">Insights</a>
+      <a data-tab="about">About</a>
+    </nav>
+    <div class="sidebar-actions">
+      <a class="button ghost" href="pricing.html">Pro / Pricing</a>
+      <a class="button ghost" href="login.html">Secure Access</a>
+      <button id="openSettings" class="button">Settings</button>
+    </div>
+  </aside>
+
+  <main class="main fade-in">
+    <header class="page-header">
+      <h1>Global Live Intelligence</h1>
+      <p class="sub">Health • Conflict • Economy • Tech • Trafficking</p>
+      <span id="supabaseBadge" class="pill">Connecting…</span>
+    </header>
+
+    <!-- 🟢 Dynamic Reports Section -->
+    <section>
+      <h2>Latest Reports</h2>
+      <div class="reports-container">
+        <p>Loading reports...</p>
+      </div>
+    </section>
+
+    <section>
+      <h2>Module Freshness</h2>
+      <p>No status yet.</p>
+    </section>
+
+    <section>
+      <h2>Live Map</h2>
+      <div style="height:420px;border:1px solid #222;border-radius:12px;background:#0f0f0f;">
+        <!-- Map placeholder -->
+      </div>
+    </section>
+
+    <section>
+      <h2>Risk & Trend Radar (Preview)</h2>
+      <p>Coming next: adjustable radius, update cadence, and 3–12 month outlook.</p>
+    </section>
+
+    <section>
+      <h2>About</h2>
+      <p>Neutral, verified signals. Voices allowed, propaganda filtered. Built for citizens, analysts, and responders.</p>
+    </section>
+  </main>
+
+  <!-- 🟢 Load environment vars dynamically from Netlify -->
+  <script>
+    window.__envPromise = (async () => {
+      try {
+        const res = await fetch('/.netlify/functions/env', { cache: 'no-store' });
+        const env = await res.json();
+
+        // ✅ Inject live envs
+        window.VITE_SUPABASE_URL = env.VITE_SUPABASE_URL;
+        window.VITE_SUPABASE_ANON_KEY = env.VITE_SUPABASE_ANON_KEY;
+
+        console.log("✅ Loaded live environment:", window.VITE_SUPABASE_URL);
+        return env;
+      } catch (err) {
+        console.error("⚠️ Could not load env from Netlify:", err);
+        return {};
+      }
+    })();
+  </script>
+
+  <!-- 🟢 Wait for env vars, then load Supabase -->
+  <script type="module">
+    await window.__envPromise;
+    import { fetchReports } from './assets/supabase.js';
+
+    async function loadReports() {
+      const reports = await fetchReports();
+      const container = document.querySelector('.reports-container');
+      if (!container) return;
+
+      if (!reports.length) {
+        container.innerHTML = '<p>No recent reports found.</p>';
+        return;
+      }
+
+      container.innerHTML = reports
+        .map(
+          (r) => `
+          <div class="report-item">
+            <h4>${r.title || 'Untitled Report'}</h4>
+            <p>${r.summary || 'No summary available.'}</p>
+            <span>${new Date(r.created_at).toLocaleString()}</span>
+          </div>
+        `
+        )
+        .join('');
+    }
+
+    loadReports();
+  </script>
+</body>
+</html>
