@@ -1,59 +1,74 @@
-// assets/predictions.js
+// assets/supabase.js
 // ---------------------------------------------------------
-// ✅ Blacklight Watch - AI Predictions Loader (Final Working Version)
+// ✅ Blacklight Watch - Unified Supabase Integration (Final Version)
 // ---------------------------------------------------------
+// Loads safely from Netlify environment or local .env
+// and ensures connection before other modules use it.
 
-import supabaseModule from './supabase.js';
-const supabase = supabaseModule;
+import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
 
-// Utility: Wait for Supabase to be ready
-async function waitForSupabase() {
-  let attempts = 0;
-  while ((!supabase || typeof supabase.from !== 'function') && attempts < 10) {
-    console.log('⏳ Waiting for Supabase...');
-    await new Promise((r) => setTimeout(r, 600));
-    attempts++;
-  }
-  if (!supabase) throw new Error('Supabase not ready after waiting.');
-  return supabase;
-}
+// Helper to read environment variables
+const readEnv = (name) =>
+  (typeof import.meta !== 'undefined' &&
+    import.meta.env &&
+    Object.prototype.hasOwnProperty.call(import.meta.env, name) &&
+    import.meta.env[name]) ||
+  (typeof window !== 'undefined' && window[name]) ||
+  '';
 
-// Main: Load AI Predictions from Supabase
-export async function loadPredictions() {
+// Create Supabase instance holder
+let supabase = null;
+
+// Initialize asynchronously
+(async () => {
   try {
-    const sb = await waitForSupabase();
+    if (window.__envPromise) await window.__envPromise;
 
-    const { data, error } = await sb
-      .from('ai_predictions')
-      .select('*')
-      .order('created_at', { ascending: false })
-      .limit(10);
+    const SUPABASE_URL = readEnv('VITE_SUPABASE_URL');
+    const SUPABASE_KEY = readEnv('VITE_SUPABASE_ANON_KEY');
 
-    if (error) {
-      console.error('❌ Supabase fetch error:', error.message);
+    if (!SUPABASE_URL || !SUPABASE_KEY) {
+      console.error('❌ Supabase not initialized — missing env vars.');
       return;
     }
 
-    console.log(`✅ Loaded ${data?.length || 0} predictions`);
-    updatePredictionUI(data);
+    supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
+    console.log('✅ Supabase initialized:', SUPABASE_URL);
   } catch (err) {
-    console.error('❌ Error loading predictions:', err.message);
+    console.error('❌ Error initializing Supabase:', err.message);
+  }
+})();
+
+// ---------------------------------------------------------
+// ✅ Fetch Reports (used by index.html)
+// ---------------------------------------------------------
+export async function fetchReports() {
+  try {
+    if (!supabase) {
+      console.warn('⚠️ Supabase not ready yet, waiting...');
+      await new Promise((r) => setTimeout(r, 1000));
+    }
+
+    const { data, error } = await supabase
+      .from('reports')
+      .select('*')
+      .order('created_at', { ascending: false })
+      .limit(20);
+
+    if (error) {
+      console.error('❌ Supabase query error:', error.message);
+      return [];
+    }
+
+    console.log(`✅ Loaded ${data?.length || 0} reports`);
+    return data || [];
+  } catch (err) {
+    console.error('❌ Failed to fetch reports:', err.message);
+    return [];
   }
 }
 
-// Update the HTML UI with loaded predictions
-function updatePredictionUI(predictions = []) {
-  const cards = document.querySelectorAll('.pred-card');
-  predictions.forEach((p, i) => {
-    const card = cards[i];
-    if (!card) return;
-
-    const meter = card.querySelector('.meter span');
-    const note = card.querySelector('.pred-note');
-
-    if (meter) meter.style.width = `${p.risk_score || 0}%`;
-    if (note) note.textContent = p.prediction || 'No data';
-  });
-
-  console.log('✅ Predictions updated in UI');
-}
+// ---------------------------------------------------------
+// ✅ Export the Supabase client (used by predictions.js)
+// ---------------------------------------------------------
+export { supabase };
