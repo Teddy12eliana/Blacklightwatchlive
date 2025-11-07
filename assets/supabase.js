@@ -1,7 +1,14 @@
 // assets/supabase.js
+// ---------------------------------------------------------
+// ✅ Blacklight Watch Supabase Integration (Stable Version)
+// ---------------------------------------------------------
+// Works seamlessly with Netlify live environment variables
+// or local .env builds via Vite. Includes async protection
+// to ensure envs load before Supabase initializes.
+
 import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
 
-// ✅ Helper to read environment variables (from Netlify or injected in HTML)
+// ✅ Helper to read environment variables (from Netlify or HTML)
 const readEnv = (name) =>
   (typeof import.meta !== 'undefined' &&
     import.meta.env &&
@@ -10,23 +17,39 @@ const readEnv = (name) =>
   (typeof window !== 'undefined' && window[name]) ||
   '';
 
-// ✅ Load Supabase URL and Key (from environment)
-const SUPABASE_URL = readEnv('VITE_SUPABASE_URL');
-const SUPABASE_KEY = readEnv('VITE_SUPABASE_ANON_KEY');
+// ✅ Asynchronous Supabase initialization (safe load)
+let supabase = null;
 
-// ✅ Check environment setup
-if (!SUPABASE_URL || !SUPABASE_KEY) {
-  console.error('❌ Supabase not initialized — missing env vars.');
-} else {
-  console.log('✅ Supabase initialized:', SUPABASE_URL);
-}
+(async () => {
+  try {
+    // Wait for Netlify env injection if available
+    if (window.__envPromise) await window.__envPromise;
 
-// ✅ Create Supabase client
-export const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
+    const SUPABASE_URL = readEnv('VITE_SUPABASE_URL');
+    const SUPABASE_KEY = readEnv('VITE_SUPABASE_ANON_KEY');
 
-// ✅ Fetch reports (used by index.html)
+    if (!SUPABASE_URL || !SUPABASE_KEY) {
+      console.error('❌ Supabase not initialized — missing env vars.');
+      return;
+    }
+
+    supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
+    console.log('✅ Supabase initialized:', SUPABASE_URL);
+  } catch (err) {
+    console.error('❌ Error initializing Supabase:', err);
+  }
+})();
+
+// ---------------------------------------------------------
+// ✅ Fetch Reports (used by index.html)
+// ---------------------------------------------------------
 export async function fetchReports() {
   try {
+    if (!supabase) {
+      console.warn('⚠️ Supabase not ready yet, waiting...');
+      await new Promise((r) => setTimeout(r, 1200));
+    }
+
     const { data, error } = await supabase
       .from('reports')
       .select('*')
