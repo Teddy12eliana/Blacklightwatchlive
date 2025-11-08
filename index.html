@@ -62,6 +62,12 @@
   <p class="muted">Auto-updated every few hours. Pro & Analyst tiers unlock history and alerting.</p>
   <p id="predictions-timestamp" class="timestamp">Last Updated: —</p>
 
+<section class="panel">
+  <h2>AI Global Newsfeed</h2>
+  <p class="muted">Live verified stories from global intelligence sources</p>
+  <div id="ai-newsfeed"><p>Loading live updates...</p></div>
+</section>
+
       <div class="pred-grid" id="predictions">
         <!-- Filled by assets/predictions.js -->
         <div class="pred-card">
@@ -163,6 +169,10 @@
 
     // Predictions
     loadPredictions();
-  </script>
+  </script>	
+<script type="module">
+  import { loadNews } from './assets/newsfeed.js';
+  loadNews();
+</script>
 </body>
 </html>

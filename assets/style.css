@@ -166,3 +166,43 @@ dialog::backdrop{background:rgba(0,0,0,.55)}
   transition: width .6s ease;
   border-radius: 999px;
 }
+
+/* === Live Timestamp Fade-In === */
+.timestamp {
+  opacity: 0;
+  transform: translateY(4px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+  color: #9fdcff;
+  font-size: 0.9rem;
+  margin-top: 4px;
+}
+.timestamp.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+ 
+/* === AI Global Newsfeed === */
+.news-item {
+  background: rgba(15, 15, 15, 0.6);
+  padding: 10px 14px;
+  margin-bottom: 10px;
+  border-left: 3px solid #0af;
+  border-radius: 8px;
+  transition: background 0.3s ease;
+}
+.news-item:hover {
+  background: rgba(30, 30, 30, 0.8);
+}
+.news-item h4 {
+  margin: 0 0 4px;
+  font-size: 1rem;
+  color: #e0e0e0;
+}
+.news-item a {
+  text-decoration: none;
+  color: #9fdcff;
+}
+.news-item p {
+  color: #aaa;
+  font-size: 0.9rem;
+}
